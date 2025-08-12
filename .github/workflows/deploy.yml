@@ -1,0 +1,30 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+    - name: Deploy via SSH
+      run: |
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          docker stop static-site || true
+          docker rm static-site || true
+          cd ~/static-site || git clone https://github.com/YOUR_USERNAME/my-static-site.git ~/static-site
+          cd ~/static-site
+          git pull origin main
+          docker build -t static-site .
+          docker run -d -p 80:80 --name static-site static-site
+        EOF

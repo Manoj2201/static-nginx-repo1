@@ -1,0 +1,15 @@
+- name: Log in to Docker Hub
+  uses: docker/login-action@v2
+  with:
+    username: ${{ secrets.DOCKERHUB_USERNAME }}
+    password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+- name: Build and push Docker image
+  uses: docker/build-push-action@v4
+  with:
+    context: .
+    file: ./Dockerfile
+    push: true
+    tags: |
+      ${{ secrets.DOCKERHUB_USERNAME }}/static-html:latest
+      ${{ secrets.DOCKERHUB_USERNAME }}/static-html:${{ github.sha }}

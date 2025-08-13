@@ -6,4 +6,4 @@ Steps involved -
 2.AWS CodePipeline detects the change. 
 3.AWS CodeBuild installs dependencies 
 4.The build output is deployed to the S3 bucket. 
-5.S3 serves the app as a public static website.
+5.S3 serves the app as a public static website. 
